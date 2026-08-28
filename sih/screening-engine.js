@@ -1,6 +1,6 @@
 /**
  * Adaptive Mental Health Screening Engine
- * M-Health India — SIH Prototype
+ * Arambh — SIH Prototype
  * 
  * ARCHITECTURE:
  *   COMMON_QUESTIONS → CONCERN_ROUTER → SCREENING_MODULES → ScoringEngine → GuidanceEngine

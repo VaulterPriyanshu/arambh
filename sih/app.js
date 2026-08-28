@@ -124,7 +124,7 @@ const QUESTION_DATABASE = {
 // Multilingual Dictionary (Supports 10 Indian Languages)
 const TRANSLATIONS = {
   en: {
-    title: "M-Health India",
+    title: "Arambh",
     tagline: "Understand. Support. Take the Next Step.",
     getStarted: "Get Started",
     skip: "Skip",
@@ -1119,7 +1119,7 @@ function generateBotResponse(userMsg) {
       botReply = "Please complete a mental health screening first, then ask me to explain your result. I can explain what PHQ-9, GAD-7, PSS-4, or WHO-5 scores mean in plain language.";
     }
   } else if (msgLower.includes('mindguide') || msgLower.includes('what can you do') || msgLower.includes('how can you help') || msgLower.includes('what are you')) {
-    botReply = "I am MindGuide, the AI assistant in M-Health India. I can: explain screening tools (PHQ-9, GAD-7, PSS-4, WHO-5) \u00b7 explain your screening scores \u00b7 explain why a particular pathway was selected \u00b7 answer general mental health questions \u00b7 help you navigate the app. I cannot: diagnose conditions \u00b7 change clinical scores \u00b7 prescribe treatment \u00b7 manage crisis situations. For emergencies, please call Tele-MANAS: 14416.";
+    botReply = "I am MindGuide, the AI assistant in Arambh. I can: explain screening tools (PHQ-9, GAD-7, PSS-4, WHO-5) \u00b7 explain your screening scores \u00b7 explain why a particular pathway was selected \u00b7 answer general mental health questions \u00b7 help you navigate the app. I cannot: diagnose conditions \u00b7 change clinical scores \u00b7 prescribe treatment \u00b7 manage crisis situations. For emergencies, please call Tele-MANAS: 14416.";
   } else {
     botReply = "I understand. Navigating mental well-being can feel challenging, but early identification is a powerful first step. Consider completing a mental health check or asking me about PHQ-9, GAD-7, PSS-4, WHO-5, or how the adaptive routing works.";
   }

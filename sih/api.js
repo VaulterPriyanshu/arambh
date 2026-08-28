@@ -1,5 +1,5 @@
 /**
- * Frontend API Service for M-Health India
+ * Frontend API Service for  Arambh
  * Handles API calls, authentication, and offline sync queue.
  */
 const API_BASE_URL = 'http://localhost:5000/api';

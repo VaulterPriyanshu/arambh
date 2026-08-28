@@ -5,7 +5,7 @@ class AiService {
     this.ai = new GoogleGenAI({ apiKey: process.env.AI_API_KEY });
     
     this.systemInstruction = `
-      You are MindGuide, a supportive mental-health wellness assistant for the M-Health India platform.
+      You are MindGuide, a supportive mental-health wellness assistant for the Arambh platform.
       You provide general educational and supportive guidance based on the user's input.
       
       CRITICAL SAFETY RULES:
