@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M-Health India: Mental Health Screening & Guidance App</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- Background toast notification for status logs -->
+  <div id="sync-toast" class="sync-toast"></div>
+
+  <!-- Primary Smartphone container shell (centers on desktop, full screen on mobile) -->
+  <div class="phone-shell">
+    <div class="phone-viewport">
+      
+      <!-- 1. Top Status Bar with Mock Details & Network Online/Offline Toggle -->
+      <div class="status-bar">
+        <span class="time">09:41 AM</span>
+        <div class="right-icons">
+          <!-- Online/Offline Sync Indicator Button -->
+          <button id="network-toggle-btn" class="network-toggle">
+            <span class="dot"></span>
+            <span class="lbl">Online</span>
+          </button>
+          <span id="sync-indicator" style="font-size:10px; font-weight:bold; margin-left:8px;">🟢 Synced</span>
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <!-- ==================== APPS VIEWS / SCREENS CONTAINERS ==================== -->
+
+      <!-- Screen 1: Splash Screen -->
+      <div id="screen-splash" class="screen active">
+        <div class="splash-logo-container">
+          <div class="splash-logo">🧘🏽‍♀️</div>
+          <h1 data-translate="title">M-Health India</h1>
+          <p data-translate="tagline">Understand. Support. Take the Next Step.</p>
+        </div>
+        <div class="splash-loader"></div>
+      </div>
+
+      <!-- Screen 2: Onboarding Screen -->
+      <div id="screen-onboarding" class="screen">
+        <div class="onboarding-slider">
+          <!-- Slide 1 -->
+          <div class="onboarding-slide active">
+            <div class="onboarding-illus">🧠</div>
+            <h2>Check Your Well-Being</h2>
+            <p>Complete short, validated screening questionnaires to identify possible mental health concerns early.</p>
+          </div>
+          <!-- Slide 2 -->
+          <div class="onboarding-slide">
+            <div class="onboarding-illus">📊</div>
+            <h2>Understand Your Result</h2>
+            <p>Get simple explanations of your screening scores in plain, non-diagnostic language.</p>
+          </div>
+          <!-- Slide 3 -->
+          <div class="onboarding-slide">
+            <div class="onboarding-illus">🌱</div>
+            <h2>Know Your Next Step</h2>
+            <p>Receive recommended self-care guidance and find nearby professional healthcare support options.</p>
+          </div>
+          <!-- Slide 4 -->
+          <div class="onboarding-slide">
+            <div class="onboarding-illus">🔒</div>
+            <h2>Your Privacy Matters</h2>
+            <p>Your screening data is protected. Screener reports do not represent clinical medical diagnoses.</p>
+          </div>
+        </div>
+        
+        <div class="onboarding-controls">
+          <div class="onboarding-dots">
+            <span class="onboarding-dot active"></span>
+            <span class="onboarding-dot"></span>
+            <span class="onboarding-dot"></span>
+            <span class="onboarding-dot"></span>
+          </div>
+          <div class="onboarding-btns">
+            <button class="btn btn-link" onclick="skipOnboard()" data-translate="skip">Skip</button>
+            <button id="onboard-next-btn" class="btn btn-primary" onclick="nextOnboard()" data-translate="next">Next</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 3: User Type Selection -->
+      <div id="screen-user-select" class="screen">
+        <div class="splash-logo-container" style="margin-bottom: 30px;">
+          <div style="font-size: 32px;">🧘🏽‍♀️</div>
+          <h2 style="font-size: 20px; color: var(--primary);">Welcome to M-Health</h2>
+          <p style="font-size: 13px; color: var(--text-muted);">Select how you want to proceed</p>
+        </div>
+        
+        <div class="user-select-container">
+          <div class="user-select-card" onclick="selectUserMode('public')">
+            <div class="user-card-icon">👤</div>
+            <h3 data-translate="publicUser">I'm Checking for Myself</h3>
+            <p data-translate="publicUserSub">For general public well-being check and guides</p>
+          </div>
+          
+          <div class="user-select-card" onclick="selectUserMode('worker')">
+            <div class="user-card-icon">👩‍⚕️</div>
+            <h3 data-translate="frontlineWorker">I'm a Frontline Worker</h3>
+            <p data-translate="frontlineWorkerSub">ASHA, ANM, or Medical Officers portal</p>
+          </div>
+        </div>
+      </div>
+      <!-- Screen 3.5: Public User Login -->
+<div id="screen-public-login" class="screen">
+
+  <div class="splash-logo-container" style="margin-bottom: 30px;">
+    <div style="font-size: 32px;">👤</div>
+
+    <h2 style="font-size: 20px; color: var(--primary);">
+      Public User Login
+    </h2>
+
+    <p style="font-size: 13px; color: var(--text-muted);">
+      Login to access your M-Health account
+    </p>
+  </div>
+
+  <form id="public-login-form">
+
+    <div class="form-group">
+      <label>Email</label>
+      <input
+        type="email"
+        id="public-email"
+        placeholder="Enter your email"
+        required
+      >
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input
+        type="password"
+        id="public-password"
+        placeholder="Enter your password"
+        required
+      >
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      Login
+    </button>
+
+  </form>
+
+  <button
+  type="button"
+    class="back-btn"
+    onclick="transitionTo('screen-user-select')"
+    style="margin-top: 15px;"
+  >
+    ⬅ Back
+  </button>
+
+</div>
+
+
+
+      <!-- Screen 4: Public Home Dashboard -->
+      <div id="screen-public-dashboard" class="screen">
+        <div class="app-header">
+          <button class="back-btn" onclick="transitionTo('screen-user-select')">⬅</button>
+          <span class="title" data-translate="title">M-Health India</span>
+          <div class="header-action"></div>
+        </div>
+        
+        <h2 class="user-greeting" id="dashboard-greeting">Good morning 🌱</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Welcome to your health space</p>
+        
+        <!-- Today's Check-in -->
+        <div class="mood-checkin" id="dashboard-mood-checkin">
+          <p data-translate="howAreYouText">How are you feeling today?</p>
+          <div class="mood-icons">
+            <button class="mood-btn" data-mood="Great" title="Great">😊</button>
+            <button class="mood-btn" data-mood="Good" title="Good">🙂</button>
+            <button class="mood-btn" data-mood="Okay" title="Okay">😐</button>
+            <button class="mood-btn" data-mood="Low" title="Low">🙁</button>
+            <button class="mood-btn" data-mood="Very low" title="Very low">😞</button>
+          </div>
+        </div>
+
+        <!-- Your Focus Today -->
+        <div class="card" id="dashboard-focus" style="display: none; border-left: 4px solid var(--primary);">
+          <div class="card-title-row" style="margin-bottom:4px;">
+            <h3 style="font-size: 13px; color: var(--text-muted);">🎯 Your Focus Today</h3>
+          </div>
+          <p id="focus-text" style="font-size: 16px; font-weight: 600;">Managing stress</p>
+        </div>
+
+        <!-- Today's Plan (Routine Preview) -->
+        <div class="card" onclick="transitionTo('screen-routine')">
+          <div class="card-title-row">
+            <h3>📅 Today's Plan</h3>
+            <span class="action-link">Edit Routine</span>
+          </div>
+          <div id="dashboard-routine-list" style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; margin-top: 8px;">
+            <!-- Populated dynamically from app.js -->
+            <div style="color: var(--text-muted);">Loading plan...</div>
+          </div>
+        </div>
+
+        <!-- Your Progress Preview -->
+        <div class="card" onclick="transitionTo('screen-progress')">
+          <div class="card-title-row">
+            <h3>📊 Your Progress</h3>
+            <span class="action-link">View Details</span>
+          </div>
+          <div id="dashboard-progress-summary" style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 8px;">
+            <div style="text-align: center;"><span style="font-size:18px;">↗️</span><br>Mood</div>
+            <div style="text-align: center;"><span id="dash-med-count" style="font-size:18px; font-weight:700;">0</span><br>Sessions</div>
+            <div style="text-align: center;"><span id="dash-rout-pct" style="font-size:18px; font-weight:700;">0%</span><br>Routine</div>
+          </div>
+        </div>
+
+        <!-- MindGuide CTA -->
+        <div class="card" style="background: var(--primary-light); border: 1px solid var(--primary);" onclick="openMindGuide()">
+          <div class="card-title-row" style="margin-bottom:4px;">
+            <h3>💬 MindGuide</h3>
+          </div>
+          <p style="font-size: 12px; color: var(--primary);">"Need help with anything? I'm here to support you."</p>
+        </div>
+
+        <h3 style="font-size: 14px; margin: 16px 0 10px;">Quick Access</h3>
+        
+        <div class="hw-action-grid">
+          <div class="hw-action-card" onclick="startAdaptiveCheck()">
+            <span class="icon">🧠</span>
+            <span>Screening</span>
+          </div>
+          <div class="hw-action-card" onclick="transitionTo('screen-wellness')">
+            <span class="icon">🧘</span>
+            <span>Wellness</span>
+          </div>
+          <div class="hw-action-card" onclick="transitionTo('screen-progress')">
+            <span class="icon">📊</span>
+            <span>Progress</span>
+          </div>
+          <div class="hw-action-card" onclick="transitionTo('screen-routine')">
+            <span class="icon">📅</span>
+            <span>My Routine</span>
+          </div>
+          <div class="hw-action-card" onclick="transitionTo('screen-womens-wellness')">
+            <span class="icon">🌸</span>
+            <span>Women's Wellness</span>
+          </div>
+          <div class="hw-action-card" onclick="transitionTo('screen-support')">
+            <span class="icon">🏥</span>
+            <span>Support</span>
+          </div>
+        </div>
+        
+        <div class="disclaimer-block" style="margin-top: 20px;">
+          Screening helps identify potential well-being concerns but does not substitute a clinical diagnosis.
+        </div>
+      </div>
+
+      <!-- Screen 5: Screening Selection -->
+      <div id="screen-screening-select" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Select Questionnaire</span>
+          <div class="header-action"></div>
+        </div>
+        
+        <div class="lang-dropdown-container">
+          <label style="font-size: 11px; font-weight:700;">Screening Language:</label>
+          <select class="lang-select-box" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="ml">മലയാളം (Malayalam)</option>
+            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+          </select>
+        </div>
+
+        <div class="disclaimer-block">
+          Please answer honestly based on how you have been feeling recently. There are no right or wrong answers.
+        </div>
+
+        <div id="screening-tools-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Screen 6: Screening Question Wizard -->
+      <div id="screen-screening-question" class="screen">
+        <div class="app-header">
+          <button class="back-btn" onclick="exitScreeningPrompt()">✖</button>
+          <!-- Adaptive routing indicator: shown when adaptive mode is active -->
+          <span id="screening-tool-title" class="title">Screening</span>
+          <div class="header-action"></div>
+        </div>
+
+        <!-- Adaptive routing indicator -->
+        <div id="adaptive-routing-indicator-bar" class="routing-indicator" style="display: none;"></div>
+
+        <!-- Accessibility Bar -->
+        <div class="accessibility-bar">
+          <button class="access-control-btn" onclick="ttsReadAloud()">
+            <span data-translate="readAloud">🔊 Read Aloud</span>
+          </button>
+          <button class="access-control-btn" onclick="cycleFontSize()">
+            <span data-translate="largeText">Aa Text</span>
+          </button>
+          <button class="access-control-btn" onclick="toggleHighContrast()">
+            <span data-translate="highContrast">👁 Contrast</span>
+          </button>
+        </div>
+
+        <div class="screening-header">
+          <span id="question-num-indicator">Question 1 of 9</span>
+        </div>
+        
+        <div class="progress-bar-container">
+          <div id="question-progress-fill" class="progress-bar-fill"></div>
+        </div>
+
+        <div class="question-card">
+          <div id="question-text" class="question-text">
+            Is the question text loading?
+          </div>
+
+          <div id="question-options-container" class="options-container">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <div class="btn-group" style="margin-top: 24px;">
+          <button class="btn btn-secondary" onclick="prevQuestion()" data-translate="back">Back</button>
+          <button class="btn btn-primary" onclick="nextQuestion()" data-translate="next">Next</button>
+        </div>
+      </div>
+
+      <!-- Screen 7: Public Result Screen -->
+      <div id="screen-screening-result" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Screening Result</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div class="results-card">
+          <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);" id="result-tool-label">PHQ-9 Score</p>
+          <div class="results-gauge">
+            <span id="result-score-num" class="score-text">0</span>
+          </div>
+          <span id="result-severity-label" class="severity-label minimal">Minimal Concern</span>
+          <p id="result-interpretation" class="results-desc">
+            Calculation interpretation statement loading...
+          </p>
+        </div>
+
+        <!-- Self-harm Safety Alert (Shown only if Q9 is positive) -->
+        <div id="result-safety-alert" class="hw-action-card-critical" style="display: none;"></div>
+
+        <div class="btn-group" style="margin-bottom: 12px;">
+          <button class="btn btn-primary" onclick="viewPersonalGuidance()">Self-Care Guidance</button>
+          <button class="btn btn-secondary" onclick="transitionTo('screen-support')">Get Support</button>
+        </div>
+
+        <button class="btn btn-outline btn-full" onclick="showToast('Screening results stored locally.'); transitionTo('screen-public-dashboard')">Save and Exit</button>
+      </div>
+
+      <!-- Screen 8: Self-Care Guidance Screen -->
+      <div id="screen-guidance" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Self-Care Guides</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div class="card">
+          <h3>🌱 Dynamic Self-Care Suggestions</h3>
+          <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Suggestions tailored to your screening severity:</p>
+          <ul id="guidance-dynamic-list" class="guidance-bullets">
+            <!-- Dynamic suggestions loaded from JS -->
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>🧘 Box Breathing Exercise</h3>
+          <p style="font-size: 12px; line-height: 1.5; margin-bottom: 8px;">Calm your nervous system immediately using box breathing:</p>
+          <ol style="font-size: 11px; padding-left: 16px; line-height: 1.4;">
+            <li>Inhale slowly through your nose for 4 seconds.</li>
+            <li>Hold your breath gently for 4 seconds.</li>
+            <li>Exhale fully through your mouth for 6 seconds.</li>
+            <li>Wait for 2 seconds and repeat 4 times.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>🥦 Healthy Habits</h3>
+          <p style="font-size: 12px; line-height: 1.5;">Maintaining balanced nutrition, daily sunlight exposure, and regular hydration provides vital resources for mood stabilization.</p>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="transitionTo('screen-support')">Find Professional Support</button>
+      </div>
+
+      <!-- Screen 9: Support Screen -->
+      <div id="screen-support" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Get Support</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div class="disclaimer-block">
+          If you are experiencing severe distress or thoughts of self-harm, please dial verified toll-free helplines immediately.
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--danger);">
+          <h3 style="color: var(--danger); font-size: 14px;">☎️ 24/7 National Helplines</h3>
+          <div class="facility-item">
+            <div class="facility-info">
+              <h4>Tele-MANAS Helpline</h4>
+              <p>Government mental health counseling network</p>
+            </div>
+            <a href="tel:14416" class="call-icon-btn">📞</a>
+          </div>
+          <div class="facility-item">
+            <div class="facility-info">
+              <h4>Kiran Mental Health Helpline</h4>
+              <p>Ministry of Social Justice toll-free helpline</p>
+            </div>
+            <a href="tel:18005990019" class="call-icon-btn">📞</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>🏥 Nearby Primary Health Centres</h3>
+          <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Health workers can facilitate consultation referrals at:</p>
+          <div class="facility-item">
+            <div class="facility-info">
+              <h4>District PHC Center - Alwar</h4>
+              <p>OPD Timings: 9:00 AM - 4:00 PM</p>
+            </div>
+            <span style="font-size:10px; color:var(--success);">Open</span>
+          </div>
+          <div class="facility-item">
+            <div class="facility-info">
+              <h4>Community Health Clinic - Chomu</h4>
+              <p>Mental Health Unit visits on Wednesdays</p>
+            </div>
+            <span style="font-size:10px; color:var(--success);">Open</span>
+          </div>
+          <div class="facility-item">
+            <div class="facility-info">
+              <h4>Sanganer PHC Center - Jaipur</h4>
+              <p>Counseling desk active</p>
+            </div>
+            <span style="font-size:10px; color:var(--text-muted);">Closed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 10: Health Worker Login Screen -->
+      <div id="screen-hw-login" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Health Worker Portal</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+          <div style="font-size: 40px; margin-bottom: 8px;">👩‍⚕️</div>
+          <h3>ASHA & ANM Login</h3>
+          <p style="font-size: 11px; color: var(--text-muted);">Access clinical screening and registry logs dashboard</p>
+        </div>
+
+        <form id="hw-login-form" class="login-form">
+          <div class="form-group">
+            <label for="hw-id-input">ASHA / ANM Identification ID</label>
+            <input type="text" id="hw-id-input" class="form-control" placeholder="e.g. ASHA-RJ-8291" required value="ASHA-RJ-8291">
+          </div>
+          <div class="form-group">
+            <label for="hw-pass-input">Security Passcode (PIN)</label>
+            <input type="password" id="hw-pass-input" class="form-control" placeholder="••••" required value="1234">
+          </div>
+          <div class="form-group">
+            <label for="hw-facility-input">Health Sub-Centre Facility</label>
+            <select id="hw-facility-input" class="form-control">
+              <option value="Sanganer-SC">Sanganer Sub-Centre</option>
+              <option value="Chomu-CHC">Chomu CHC</option>
+              <option value="Alwar-District">Alwar Health Centre</option>
+            </select>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-full" style="margin-top: 10px;">Login Dashboard</button>
+        </form>
+      </div>
+
+      <!-- Screen 11: Frontline Health Worker Dashboard -->
+      <div id="screen-hw-dashboard" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title" id="hw-profile-name">ASHA / ANM Dashboard</span>
+          <div class="header-action"></div>
+        </div>
+
+        <!-- Worker Stat counters -->
+        <div class="hw-stats-grid">
+          <div class="hw-stat-card">
+            <span class="num" id="hw-stat-screenings">0</span>
+            <span class="lbl">Screenings Logged</span>
+          </div>
+          <div class="hw-stat-card">
+            <span class="num" id="hw-stat-patients">0</span>
+            <span class="lbl">Patients Enrolled</span>
+          </div>
+          <div class="hw-stat-card" style="grid-column: span 2;">
+            <span class="num" id="hw-stat-followups" style="color: var(--accent);">0</span>
+            <span class="lbl">Pending Follow-ups due this week</span>
+          </div>
+        </div>
+
+        <div class="hw-action-grid">
+          <div class="hw-action-card" onclick="transitionTo('screen-new-patient')">
+            <span class="icon">➕</span>
+            <span>New Patient</span>
+          </div>
+          <div class="hw-action-card" onclick="transitionTo('screen-patients')">
+            <span class="icon">👥</span>
+            <span>Registry</span>
+          </div>
+          <div class="hw-action-card" onclick="transitionTo('screen-followups')">
+            <span class="icon">🗓️</span>
+            <span>Follow-ups</span>
+          </div>
+          <div class="hw-action-card" onclick="transitionTo('screen-reports')">
+            <span class="icon">📈</span>
+            <span>Analytics</span>
+          </div>
+        </div>
+
+        <!-- Adaptive Mental Health Check featured action -->
+        <div class="hw-action-card adaptive" onclick="startAdaptiveCheck()" style="margin-bottom:16px; text-align:center; flex-direction:column; align-items:center; gap:4px;">
+          <span class="icon">🧠</span>
+          <span>Adaptive Health Check</span>
+          <span style="font-size:10px; color:var(--text-muted); font-weight:400;">Guided screening for enrolled patient</span>
+        </div>
+
+        <div class="card" onclick="transitionTo('screen-privacy')">
+          <div class="card-title-row">
+            <h3>🔒 Patient Privacy & ABDM standard</h3>
+            <span class="action-link">Verify</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted);">Ensure compliance with Digital Personal Health Information guidelines.</p>
+        </div>
+      </div>
+
+      <!-- Screen 12: New Patient Enrollment & Consent -->
+      <div id="screen-new-patient" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Enroll Patient</span>
+          <div class="header-action"></div>
+        </div>
+
+        <form id="new-patient-form" class="login-form" style="margin-top: 10px;">
+          <!-- Consent Box -->
+          <div class="consent-box">
+            <label class="checkbox-label">
+              <input type="checkbox" id="pt-consent-check" required>
+              <div>
+                <strong>Verify Patient Consent</strong>
+                <p style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">
+                  The patient has verbally agreed to complete this assessment and understands information is stored under safety standards.
+                </p>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="pt-name">Patient Name / Initial</label>
+            <input type="text" id="pt-name" class="form-control" placeholder="e.g. S. Sharma" required>
+          </div>
+
+          <div class="form-group">
+            <label for="pt-age">Age Group</label>
+            <select id="pt-age" class="form-control">
+              <option value="18-25">18-25</option>
+              <option value="26-35">26-35</option>
+              <option value="36-45">36-45</option>
+              <option value="46-55">46-55</option>
+              <option value="56-65">56-65</option>
+              <option value="65+">65+</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pt-gender">Gender</label>
+            <select id="pt-gender" class="form-control">
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other / Prefer not to say</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pt-lang">Preferred Communication Language</label>
+            <select id="pt-lang" class="form-control">
+              <option value="Hindi">Hindi</option>
+              <option value="English">English</option>
+              <option value="Bengali">Bengali</option>
+              <option value="Marathi">Marathi</option>
+              <option value="Telugu">Telugu</option>
+              <option value="Tamil">Tamil</option>
+              <option value="Gujarati">Gujarati</option>
+              <option value="Punjabi">Punjabi</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pt-phone">Contact Number for Follow-up</label>
+            <input type="tel" id="pt-phone" class="form-control" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full" style="margin-top: 10px;">Save and Start Screening</button>
+        </form>
+      </div>
+
+      <!-- Screen 13 & 14: Worker Result / Action Recommendation -->
+      <div id="screen-hw-result" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Screening Score Summary</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div class="card">
+          <p id="hw-res-patient" style="font-size:12px;">Patient ID: PT-0000</p>
+          <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 10px;">
+            Screening Tool: <strong id="hw-res-tool">PHQ-9</strong>
+          </p>
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(0,0,0,0.05); padding-top:10px;">
+            <span>Score Result:</span>
+            <span style="font-size: 16px; font-weight:700; color:var(--primary);" id="hw-res-score">0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 8px;">
+            <span>Severity Indicator:</span>
+            <span style="font-weight:700;" id="hw-res-severity">Minimal Concern</span>
+          </div>
+          <div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,0,0,0.05);">
+            <p id="hw-res-interpretation" style="font-size:11px; color:var(--text-muted); line-height:1.4;"></p>
+          </div>
+        </div>
+
+        <!-- Red Flag Urgent warnings box -->
+        <div id="hw-res-flags"></div>
+
+        <!-- Interactive Action card -->
+        <div id="hw-res-action-card" class="card" style="border-left:4px solid var(--primary);">
+          <!-- Populated dynamically based on score -->
+        </div>
+        
+        <div class="disclaimer-block" style="background-color: var(--primary-light); color: var(--primary); border-color: var(--primary);">
+          Decision support note: Recommendation based on standard clinical protocol algorithms. The worker must exercise final judgment.
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="hwActionSaveResult()">Save and Sync Record</button>
+      </div>
+
+      <!-- Screen 15: Patient History / Registry Timeline -->
+      <div id="screen-patients" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title" data-translate="patientRegistry">Patient Registry</span>
+          <div class="header-action"></div>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="margin-bottom:16px;">
+          <input type="text" id="patient-search-input" class="form-control" data-translate-placeholder="searchPlaceholder" placeholder="Search patient by ID or name..." oninput="showToast('Filtering patients list...')">
+        </div>
+
+        <div id="patient-list-registry">
+          <!-- Dynamically populated patients card list -->
+        </div>
+      </div>
+
+      <!-- Sub Screen: Patient Detailed History Timeline -->
+      <div id="screen-patient-history" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title" id="history-patient-title">Patient History</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div class="card" style="background:var(--primary-light); color:var(--primary);">
+          <p id="history-patient-meta" style="font-size:12px; font-weight:600;">Patient details</p>
+        </div>
+
+        <!-- SVG Score Trend chart card -->
+        <div class="card" id="history-chart-wrapper">
+          <h4 style="font-size: 13px; margin-bottom: 10px;">Score Trend over Time</h4>
+          <div class="chart-container" id="history-trend-bars">
+            <!-- Simulated dynamic bar charts in JS -->
+          </div>
+          <div style="font-size: 10px; color:var(--text-muted); text-align:center; margin-top:14px;">
+            Note: Maximum scores are 27 (PHQ-9) and 21 (GAD-7)
+          </div>
+        </div>
+
+        <h3 style="font-size: 14px; margin: 10px 0;">Logged Assessments:</h3>
+        <div class="patient-timeline" id="history-timeline-list">
+          <!-- timeline items populated via JS -->
+        </div>
+      </div>
+
+      <!-- Screen 16: Follow-up Dashboard -->
+      <div id="screen-followups" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Follow-ups Queue</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div class="custom-table-wrapper">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Tool</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="followups-list-tbody">
+              <!-- populated in JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Screen 17: Reports & Analytics Dashboard -->
+      <div id="screen-reports" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">PHC Analytics Reports</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div class="card">
+          <h4 style="font-size: 13px; margin-bottom: 10px;">Screening Volume (Last 5 Months)</h4>
+          <div class="chart-container" id="reports-trend-bars">
+            <!-- Generated in JS -->
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>Severity Distribution (Aggregated)</h4>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px; font-size:11px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span>Minimal Concern (Green)</span>
+                <strong>42%</strong>
+              </div>
+              <div style="height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
+                <div style="height:100%; background:var(--success); width:42%;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span>Mild Concern (Yellow)</span>
+                <strong>38%</strong>
+              </div>
+              <div style="height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
+                <div style="height:100%; background:var(--accent); width:38%;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span>Moderate/Severe Concern (Red)</span>
+                <strong>20%</strong>
+              </div>
+              <div style="height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
+                <div style="height:100%; background:var(--danger); width:20%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:14px;">
+          <h4>Key Aggregates Summary</h4>
+          <p style="font-size:11px; margin-top:6px;">Total screenings completed: <strong>184</strong></p>
+          <p style="font-size:11px;">Referral completion compliance rate: <strong>94.2%</strong></p>
+        </div>
+      </div>
+
+      <!-- Screen 21: Wellness Studio -->
+      <div id="screen-wellness" class="screen">
+        <div class="app-header">
+          <button class="back-btn" onclick="transitionTo('screen-public-dashboard')">⬅</button>
+          <span class="title">🧘 Wellness Studio</span>
+          <div class="header-action"></div>
+        </div>
+        <div class="user-select-container" style="max-width: 100%;">
+          <div class="card" onclick="openWellnessCategory('yoga')">
+            <h3 style="margin-bottom:8px;">🤸‍♀️ Yoga & Movement</h3>
+            <p style="font-size:12px; color:var(--text-muted);">Gentle poses for stress relief and relaxation.</p>
+          </div>
+          <div class="card" onclick="openWellnessCategory('meditation')">
+            <h3 style="margin-bottom:8px;">🎧 Meditation & Breathing</h3>
+            <p style="font-size:12px; color:var(--text-muted);">Guided audio sessions to calm the mind.</p>
+          </div>
+        </div>
+        <div id="wellness-content-area" style="display:none; margin-top:20px;">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Screen 22: My Progress -->
+      <div id="screen-progress" class="screen">
+        <div class="app-header">
+          <button class="back-btn" onclick="transitionTo('screen-public-dashboard')">⬅</button>
+          <span class="title">📊 My Progress</span>
+          <div class="header-action"></div>
+        </div>
+        
+        <div class="card">
+          <h3>Recent Mood Trend</h3>
+          <div class="chart-container" id="progress-mood-chart" style="margin-top:10px; height: 120px; display:flex; align-items:flex-end; gap:8px;">
+            <!-- Generated in JS -->
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Smart Insights</h3>
+          <div id="progress-insights" style="font-size: 12px; line-height:1.5; margin-top:10px;">
+            <!-- Generated in JS -->
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Wellness Sessions</h3>
+          <div id="progress-wellness-history" style="font-size:12px; margin-top:10px;">
+            <!-- Generated in JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 23: My Routine -->
+      <div id="screen-routine" class="screen">
+        <div class="app-header">
+          <button class="back-btn" onclick="transitionTo('screen-public-dashboard')">⬅</button>
+          <span class="title">📅 My Routine</span>
+          <div class="header-action"></div>
+        </div>
+        
+        <button class="btn btn-primary btn-full" style="margin-bottom: 16px;" onclick="generateRoutineAI()">✨ Auto-Create My Routine</button>
+
+        <div id="routine-planner-list" class="patient-timeline">
+           <!-- Populated in JS -->
+        </div>
+      </div>
+
+      <!-- Screen 24: Women's Wellness -->
+      <div id="screen-womens-wellness" class="screen">
+        <div class="app-header">
+          <button class="back-btn" onclick="transitionTo('screen-public-dashboard')">⬅</button>
+          <span class="title">🌸 Women's Wellness</span>
+          <div class="header-action"></div>
+        </div>
+        
+        <div id="ww-opt-in" class="card" style="text-align:center;">
+          <h3>Private Wellness Space</h3>
+          <p style="font-size:12px; color:var(--text-muted); margin:10px 0;">This section provides gentle support for menstrual health, PMS, and PCOS/PCOD management. Your data is strictly private.</p>
+          <button class="btn btn-primary btn-full" onclick="activateWomensWellness()">Enable Space</button>
+        </div>
+
+        <div id="ww-dashboard" style="display:none;">
+          <div class="card">
+            <h3>Cycle Tracking</h3>
+            <div id="ww-cycle-info" style="margin-top:10px; font-size:12px;"></div>
+          </div>
+          <div class="card" onclick="openWellnessCategory('pms')">
+            <h3 style="margin-bottom:8px;">🌿 Period Comfort & PMS</h3>
+            <p style="font-size:12px; color:var(--text-muted);">Gentle poses and relaxation guidance.</p>
+          </div>
+          <div class="card" onclick="openWellnessCategory('pcos')">
+            <h3 style="margin-bottom:8px;">🌺 PCOS/PCOD Wellness</h3>
+            <p style="font-size:12px; color:var(--text-muted);">Educational support and lifestyle management.</p>
+          </div>
+          <div class="disclaimer-block" style="margin-top:10px;">
+            Information provided here is for general wellness and does not replace medical care. Consult a healthcare professional for specific conditions.
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 19: Profile & Settings Screen -->
+      <div id="screen-profile" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">App Settings</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div class="card">
+          <h3>👤 Guest Account</h3>
+          <p style="font-size: 11px; color:var(--text-muted);">General Public profile settings</p>
+        </div>
+
+        <div class="card">
+          <h3>⚙️ Accessibility Preferences</h3>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+            <button class="btn btn-secondary btn-full" onclick="toggleTheme()">🌗 Toggle Light / Dark Theme</button>
+            <button class="btn btn-secondary btn-full" onclick="cycleFontSize()">Aa Adjust Font Magnification</button>
+            <button class="btn btn-secondary btn-full" onclick="toggleHighContrast()">👁 Toggle High Contrast Filters</button>
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--danger);">
+          <h3>⚠️ System Administration</h3>
+          <p style="font-size: 11px; color:var(--text-muted); margin-bottom:10px;">Maintain local database parameters:</p>
+          <button class="btn btn-danger btn-full" onclick="resetLocalData()">Reset Database Defaults</button>
+        </div>
+      </div>
+
+      <!-- Screen 20: Privacy & Consent Guidelines -->
+      <div id="screen-privacy" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Privacy & Consent</span>
+          <div class="header-action"></div>
+        </div>
+
+        <div class="card">
+          <h3>🔐 Ayushman Bharat Compliance</h3>
+          <p style="font-size: 12px; line-height: 1.5; margin-top: 6px;">
+            Our framework adheres to Indian Digital Personal Health Information privacy principles:
+          </p>
+          <ul style="font-size:11px; padding-left:16px; margin-top:8px; line-height: 1.4;">
+            <li><strong>Data Minimization</strong>: We do not store full patient identities in clear text on servers.</li>
+            <li><strong>Local Encription</strong>: All local data queues inside SQLite/localStorage are secured.</li>
+            <li><strong>Revocable Consent</strong>: Patients can request data purging at any point via worker desks.</li>
+          </ul>
+        </div>
+
+        <div class="card" style="text-align:center;">
+          <h4 style="margin-bottom:8px;">Consent Receipt Code</h4>
+          <span style="font-family:monospace; font-size:16px; font-weight:700; color:var(--primary);">ABDM-CONSENT-8291-ACTIVE</span>
+          <button class="btn btn-outline btn-full" style="margin-top:12px;" onclick="showToast('Consent receipt mock PDF download initialized...')">Download Consent Receipt</button>
+        </div>
+      </div>
+
+      <!-- ==================== ADAPTIVE MENTAL HEALTH SCREENING — NEW SCREENS ==================== -->
+
+      <!-- Screen A1: Common Question 1 — How have you been feeling? -->
+      <div id="screen-common-q1" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Mental Health Check</span>
+          <div class="header-action"></div>
+        </div>
+        <div class="adaptive-step-indicator">
+          <span class="step-badge">Step 1 of 2</span>
+          <p class="step-note">These 2 questions help us find the most relevant screening for you.</p>
+        </div>
+        <div class="disclaimer-block">
+          These questions are used only to guide your personalised screening — not for diagnosis.
+        </div>
+        <div class="common-question-card">
+          <div class="common-q-text" id="cq1-text">How have you been feeling recently?</div>
+          <div class="common-options-grid" id="cq1-options"><!-- Rendered by JS --></div>
+        </div>
+      </div>
+
+      <!-- Screen A2: Common Question 2 — What has been troubling you? -->
+      <div id="screen-common-q2" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Mental Health Check</span>
+          <div class="header-action"></div>
+        </div>
+        <div class="adaptive-step-indicator">
+          <span class="step-badge">Step 2 of 2</span>
+          <p class="step-note">Select the area that feels most relevant to you right now.</p>
+        </div>
+        <div class="disclaimer-block">
+          Your answer selects the most appropriate validated screening pathway for you.
+        </div>
+        <div class="common-question-card">
+          <div class="common-q-text" id="cq2-text">What has been troubling you the most?</div>
+          <div class="common-options-grid" id="cq2-options"><!-- Rendered by JS --></div>
+        </div>
+      </div>
+
+      <!-- Screen A3: Contextual Follow-up Questions -->
+      <div id="screen-contextual-q" class="screen">
+        <div class="app-header">
+          <button class="back-btn" onclick="exitScreeningPrompt()">✖</button>
+          <span id="contextual-screen-title" class="title">Understanding Your Experience</span>
+          <div class="header-action"></div>
+        </div>
+        <div class="accessibility-bar">
+          <button class="access-control-btn" onclick="ttsReadContextual()"><span>🔊 Read Aloud</span></button>
+          <button class="access-control-btn" onclick="cycleFontSize()"><span>Aa Text</span></button>
+          <button class="access-control-btn" onclick="toggleHighContrast()"><span>👁 Contrast</span></button>
+        </div>
+        <div class="routing-indicator">
+          <span class="ri-icon">🔀</span>
+          <span id="contextual-routing-label">Contextual questions following your screening</span>
+        </div>
+        <div class="screening-header">
+          <span id="contextual-q-indicator">Question 1 of 2</span>
+        </div>
+        <div class="progress-bar-container">
+          <div id="contextual-progress-fill" class="progress-bar-fill" style="background:var(--secondary);"></div>
+        </div>
+        <div class="common-question-card">
+          <div id="contextual-q-text" class="question-text" style="font-size:16px; min-height:60px;"></div>
+          <div id="contextual-options-container" class="common-options-grid"></div>
+        </div>
+        <div class="btn-group" style="margin-top:24px;">
+          <button class="btn btn-secondary" onclick="prevContextualQ()">Back</button>
+          <button class="btn btn-primary" onclick="nextContextualQ()">Next</button>
+        </div>
+      </div>
+
+      <!-- Screen A4: Adaptive Screening Result -->
+      <div id="screen-adaptive-result" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">Your Screening Result</span>
+          <div class="header-action"></div>
+        </div>
+        <div id="adaptive-pathway-badge" class="pathway-badge-row"></div>
+        <div class="adaptive-results-card">
+          <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted);" id="adaptive-tool-label">Screening Tool</p>
+          <div class="results-gauge">
+            <span id="adaptive-score-num" class="score-text">0</span>
+          </div>
+          <span id="adaptive-severity-label" class="severity-label minimal">Minimal Concern</span>
+          <p id="adaptive-interpretation" class="results-desc">Loading interpretation...</p>
+        </div>
+        <div id="adaptive-safety-alert" class="hw-action-card-critical" style="display:none;"></div>
+        <div class="card" id="adaptive-guidance-card">
+          <div class="card-title-row" style="margin-bottom:8px;">
+            <h3 style="font-size:14px;">🌱 Your Personalised Guidance</h3>
+          </div>
+          <p id="adaptive-guidance-summary" style="font-size:12px; color:var(--text-muted); line-height:1.5; margin-bottom:12px;"></p>
+          <ul id="adaptive-next-steps" class="guidance-bullets" style="margin-bottom:10px;"></ul>
+          <div id="adaptive-support-info" class="disclaimer-block" style="margin:0;"></div>
+        </div>
+        <div class="btn-group" style="margin-bottom:12px;">
+          <button class="btn btn-primary" onclick="viewPersonalGuidance()">🌱 View Guidance</button>
+          <button class="btn btn-secondary" onclick="transitionTo('screen-support')">🏥 Find Support</button>
+        </div>
+        <div class="btn-group" style="margin-bottom:12px;">
+          <button class="btn btn-secondary" onclick="openMindGuideFromResult()">💬 Ask MindGuide</button>
+          <button class="btn btn-secondary" onclick="saveAdaptiveResult()">💾 Save Result</button>
+        </div>
+        <div class="disclaimer-block" style="margin-bottom:12px; font-size:10px;">
+          ⚕️ <strong>This screening does not provide a medical diagnosis.</strong> Results indicate possible areas of concern and are intended for early identification and guidance purposes only. Always consult a qualified healthcare professional for medical advice.
+        </div>
+        <button class="btn btn-outline btn-full" onclick="transitionTo('screen-public-dashboard')" style="margin-bottom:20px;">Return to Home</button>
+      </div>
+
+      <!-- Screen A5: Safety Pathway (triggered when PHQ-9 Q9 > 0) -->
+      <div id="screen-safety" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title" style="color:var(--danger);">Support Available Now</span>
+          <div class="header-action"></div>
+        </div>
+        <div class="safety-headline-card">
+          <div class="safety-icon">🤝</div>
+          <h2 id="safety-headline-text">Your response suggests you may need support right now.</h2>
+          <p id="safety-message-text">You are not alone. Trained counselors are available 24/7.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--primary); font-size:14px; margin-bottom:12px;">💛 Steps You Can Take Right Now</h3>
+          <ul id="safety-steps-list" class="guidance-bullets"></ul>
+        </div>
+        <div class="card" style="border-left:4px solid var(--danger);">
+          <h3 style="color:var(--danger); font-size:14px; margin-bottom:12px;">☎️ Verified Helplines — Available 24/7</h3>
+          <div id="safety-helplines-container"></div>
+        </div>
+        <div class="disclaimer-block" style="border-color:var(--danger); background:var(--danger-light); color:hsl(356,75%,25%);" id="safety-ai-disclaimer">
+          MindGuide AI does not manage crisis situations. Please contact a trained human counselor using the resources above.
+        </div>
+        <button class="btn btn-primary btn-full" onclick="transitionTo('screen-support')" style="margin-bottom:20px;">View All Support Resources →</button>
+      </div>
+
+      <!-- Screen A6: Daily Well-being Trend -->
+      <div id="screen-wellbeing-trend" class="screen">
+        <div class="app-header">
+          <button class="back-btn">⬅</button>
+          <span class="title">My Well-being Trend</span>
+          <div class="header-action"></div>
+        </div>
+        <div class="disclaimer-block">
+          This is a personal mood log for self-awareness only. It does not represent a clinical assessment.
+        </div>
+        <div class="card">
+          <h3 style="font-size:14px; margin-bottom:10px;">📈 Mood — Last 7 Days</h3>
+          <div class="wellbeing-chart" id="wellbeing-trend-chart"></div>
+          <div id="wellbeing-trend-labels" style="display:flex; justify-content:space-around; margin-top:8px; font-size:9px; color:var(--text-muted);"></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:14px; margin-bottom:10px;">📋 Recent Mood Entries</h3>
+          <div id="wellbeing-entries-list"></div>
+          <p id="wellbeing-no-entries" style="font-size:12px; color:var(--text-muted); text-align:center; padding:10px 0; display:none;">No mood entries yet. Check in daily from your home screen!</p>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="transitionTo('screen-public-dashboard')" style="margin-bottom:20px;">Return to Home</button>
+      </div>
+
+      <!-- ==================== APPS BOTTOM NAVIGATION BARS ==================== -->
+
+      <!-- Public User Tabs Navigation -->
+      <nav id="bottom-nav-public" class="bottom-nav">
+        <a class="nav-item active" onclick="transitionTo('screen-public-dashboard')">
+          <span>🏠</span>Home
+        </a>
+        <a class="nav-item" onclick="transitionTo('screen-screening-select')">
+          <span>📝</span>Screen
+        </a>
+        <a class="nav-item" onclick="viewPersonalGuidance()">
+          <span>🌱</span>Guidance
+        </a>
+        <a class="nav-item" onclick="transitionTo('screen-support')">
+          <span>🏥</span>Support
+        </a>
+        <a class="nav-item" onclick="transitionTo('screen-profile')">
+          <span>⚙️</span>Settings
+        </a>
+      </nav>
+
+      <!-- Health Worker Tabs Navigation -->
+      <nav id="bottom-nav-worker" class="bottom-nav">
+        <a class="nav-item active" onclick="transitionTo('screen-hw-dashboard')">
+          <span>🏠</span>Dashboard
+        </a>
+        <a class="nav-item" onclick="transitionTo('screen-patients')">
+          <span>👥</span>Registry
+        </a>
+        <a class="nav-item" onclick="transitionTo('screen-followups')">
+          <span>🗓️</span>Follow-ups
+        </a>
+        <a class="nav-item" onclick="transitionTo('screen-reports')">
+          <span>📈</span>Reports
+        </a>
+        <a class="nav-item" onclick="transitionTo('screen-privacy')">
+          <span>🔒</span>Security
+        </a>
+      </nav>
+
+      <!-- MindGuide Chatbot Floating Sheet -->
+      <div id="mindguide-bottom-sheet" class="chat-bottom-sheet" >
+        <div class="chat-sheet-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:24px;">💬</span>
+            <div>
+              <h3 style="font-size:16px;">MindGuide</h3>
+              <p style="font-size:11px; color:var(--text-muted); font-weight:400;">Your wellness companion</p>
+            </div>
+          </div>
+          <button class="back-btn" onclick="closeMindGuide()" style="width:30px; height:30px;">✖</button>
+        </div>
+        <div class="chat-container-layout" style="height:400px;">
+          <div id="chat-history" class="chat-history" style="flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:10px;">
+            <div class="chat-msg bot">
+              I'm here to help. Would you like to talk about what's causing stress, take a quick check-in, or try a short calming activity?
+            </div>
+          </div>
+          
+          <div class="chat-quick-replies" style="padding:0 10px 10px;">
+            <button class="quick-reply-chip" onclick="sendQuickReply('Talk about it')">Talk about it</button>
+            <button class="quick-reply-chip" onclick="sendQuickReply('Try meditation')">Try meditation</button>
+            <button class="quick-reply-chip" onclick="sendQuickReply('Plan my day')">Plan my day</button>
+            <button class="quick-reply-chip" onclick="sendQuickReply('Find support')">Find support</button>
+          </div>
+
+          <div class="chat-input-bar" style="padding:10px; border-top:1px solid rgba(0,0,0,0.05); display:flex; gap:8px;">
+            <input type="text" id="chat-msg-input" class="form-control" placeholder="Type a message..." style="flex:1;">
+            <button id="chat-send-btn" class="btn btn-primary" style="padding:10px;">Send</button>
+          </div>
+          <div class="chat-disclaimer" style="font-size:10px; text-align:center; padding-bottom:10px; color:var(--text-muted);">
+            MindGuide provides guidance, not clinical diagnosis.
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Action Buttons Container -->
+      <div class="floating-actions-container">
+        <!-- Chatbot Button -->
+        <div id="mindguide-float-btn" class="mindguide-float" onclick="openMindGuide()">💬</div>
+        <!-- SOS Button -->
+        <div id="sos-btn" class="sos-float" onclick="transitionTo('screen-support')">SOS</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Desktop sidebar guide content (only visible on larger desktop screens) -->
+  <div class="desktop-info-aside">
+    <h3>💡 Prototype Guide</h3>
+    <p>Use this sidebar to explore features of the mobile-first prototype:</p>
+    <ul>
+      <li><strong>🧠 Adaptive Check (NEW!):</strong> Tap <em>"Start Mental Health Check"</em> on the Public Dashboard. Answer 2 common questions to get routed automatically to PHQ-9, GAD-7, or PSS-4 screening.</li>
+      <li><strong>Demo Path 1 — Anxiety:</strong> Select <em>"Worry / anxiety"</em> → Routed to GAD-7 → Score → Guidance.</li>
+      <li><strong>Demo Path 2 — Low Mood:</strong> Select <em>"Low mood / sadness"</em> → Routed to PHQ-9 → Score → Guidance.</li>
+      <li><strong>Demo Path 3 — Work Pressure:</strong> Select <em>"College / work pressure"</em> → PSS-4 → Contextual questions → Personalised guidance.</li>
+      <li><strong>Safety Test:</strong> In PHQ-9, select any answer on Q9 (last question) to trigger the Safety Support pathway.</li>
+      <li><strong>Offline Capability:</strong> Click the <span style="color:var(--primary); font-weight:700;">Online</span> toggle to go Offline — scoring still works. Toggle Online to sync.</li>
+      <li><strong>Frontline Worker Login:</strong> Use ASHA ID <code>ASHA-RJ-8291</code> and Passcode <code>1234</code>.</li>
+    </ul>
+    <p style="margin-top:10px; font-size:11px; color:var(--text-muted);">Created for India's Primary Health Centres & Frontline Networks.</p>
+  </div>
+
+  <!-- Application scripts references -->
+  <script src="dummyData.js"></script>
+  <script src="screening-engine.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "mental-health-screening-app",
+  "version": "1.0.0",
+  "description": "Mobile-first Mental Health Screening and Guidance Application prototype for Indian Public Health frontline workers.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server ./ -p 3000",
+    "start": "npx http-server ./ -p 3000"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
